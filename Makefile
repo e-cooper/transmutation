@@ -1,9 +1,9 @@
 PRODUCT_NAME       = project
-SOURCES            = main.c myLib.c text.c gb_images/gameScreen.c gb_images/instructionScreen.c gb_images/pauseScreen.c gb_images/startScreen.c gb_images/winScreen.c gb_images/sprites.c
+SOURCES            = main.c myLib.c text.c gb_images/house.c gb_images/collisionmap.c gb_images/instructionScreen.c gb_images/pauseScreen.c gb_images/startScreen.c gb_images/winScreen.c gb_images/sprites.c
 
-DKPATH             = H:/devkitARM/bin
-CCPATH             = H:/cygwin64/bin
-VBASIM             = H:/vba/VisualBoyAdvance.exe
+DKPATH             = C:/devkitARM/bin
+CCPATH             = C:/cygwin64/bin
+VBASIM             = C:/vba/VisualBoyAdvance.exe
 FIND               = find
 COPY               = cp -r
 
