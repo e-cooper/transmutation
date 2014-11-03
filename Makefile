@@ -1,5 +1,5 @@
 PRODUCT_NAME       = project
-SOURCES            = main.c myLib.c text.c gb_images/gameScreen.c gb_images/instructionScreen.c gb_images/pauseScreen.c gb_images/startScreen.c gb_images/winScreen.c gb_images/sprites.c
+SOURCES            = main.c myLib.c sound.c game.c gb_images/mainmap.c gb_images/collisionmainmap.c gb_images/instructionScreen.c gb_images/pauseScreen.c gb_images/startScreen.c gb_images/winScreen.c gb_images/sprites.c gb_sounds/CollectionJingle.c gb_sounds/MainSoundtrack.c
 
 DKPATH             = H:/devkitARM/bin
 CCPATH             = H:/cygwin64/bin

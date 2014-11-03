@@ -1,4 +1,9 @@
 #include "myLib.h"
+#include "game.h"
+#include "gb_images/winScreen.h"
+#include "gb_images/instructionScreen.h"
+#include "gb_images/pauseScreen.h"
+#include "gb_images/startScreen.h"
 
 unsigned short *videoBuffer = (u16 *)0x6000000;
 
@@ -6,6 +11,52 @@ unsigned short *frontBuffer = (u16 *)0x6000000;
 unsigned short *backBuffer =  (u16 *)0x600A000;
 
 DMA *dma = (DMA *)0x40000B0;
+
+// My Stuff
+// ========
+
+void initState(int state) {
+	if (state == STARTSCREEN) {
+		loadPalette(startScreenPal);
+  	DMANow(3, startScreenTiles, &CHARBLOCKBASE[0], startScreenTilesLen);
+  	DMANow(3, startScreenMap, &SCREENBLOCKBASE[27], startScreenMapLen);
+
+  	selector = 0;
+	  selectRow = 92;
+	  selectCol = 70;
+	}
+	else if (state == PAUSESCREEN) {
+		loadPalette(pauseScreenPal);
+  	DMANow(3, pauseScreenTiles, &CHARBLOCKBASE[0], pauseScreenTilesLen);
+  	DMANow(3, pauseScreenMap, &SCREENBLOCKBASE[27], pauseScreenMapLen);
+	}
+	else if (state == INSTRUCTIONSCREEN) {
+		loadPalette(instructionScreenPal);
+  	DMANow(3, instructionScreenTiles, &CHARBLOCKBASE[0], instructionScreenTilesLen);
+  	DMANow(3, instructionScreenMap, &SCREENBLOCKBASE[27], instructionScreenMapLen);
+	}
+	else if (state == WINSCREEN) {
+		loadPalette(winScreenPal);
+  	DMANow(3, winScreenTiles, &CHARBLOCKBASE[0], winScreenTilesLen);
+  	DMANow(3, winScreenMap, &SCREENBLOCKBASE[27], winScreenMapLen);
+	}
+
+  hideSprites();
+  clearShadowOAM();
+
+  if (state == PAUSESCREEN) {
+    pauseSound();
+  }
+  else {
+    stopSound();
+  }
+
+  REG_BG0HOFS = 0;
+  REG_BG0VOFS = 0;
+}
+
+// End of My Stuff
+// ===============
 
 void setPixel3(int row, int col, unsigned short color)
 {
