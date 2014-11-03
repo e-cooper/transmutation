@@ -68,6 +68,16 @@ void stopSound() {
   soundB.isPlaying = 0;
 }
 
+void pauseSound() {
+  REG_TM0CNT ^= TIMER_ON;
+  REG_TM1CNT ^= TIMER_ON;
+}
+
+void unpauseSound() {
+  REG_TM0CNT = TIMER_ON;
+  REG_TM1CNT = TIMER_ON;
+}
+
 void setupInterrupts() {
   REG_IME = 0;
   REG_INTERRUPT = (unsigned int)interruptHandler;
@@ -79,8 +89,8 @@ void setupInterrupts() {
 void interruptHandler() {
   REG_IME = 0;
   if (REG_IF & INT_VBLANK) {
-    if (soundA.isPlaying) {
-        vbCountA++;
+    if (paused == 0 && soundA.isPlaying) {
+      vbCountA++;
     }
     if (vbCountA >= soundA.duration) {
       REG_TM0CNT = 0;
@@ -89,8 +99,8 @@ void interruptHandler() {
         playSoundA(soundA.data, soundA.length, soundA.frequency);
       }
     }
-    if (soundB.isPlaying) {
-        vbCountB++;
+    if (paused == 0 && soundB.isPlaying) {
+      vbCountB++;
     }
     if (vbCountB >= soundB.duration) {
       REG_TM1CNT = 0;

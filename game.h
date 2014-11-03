@@ -16,7 +16,7 @@ void animate();
 void movement();
 void updateOAM();
 void checkCollect();
-void collect();
+void collect(int i);
 
 unsigned int buttons;
 unsigned int oldButtons;
@@ -26,6 +26,7 @@ OBJ_ATTR shadowOAM[128];
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 160
 #define COLL_MAP_SIZE 512
+#define NUM_BANANAS 10
 
 typedef struct  
 {
@@ -41,9 +42,10 @@ typedef struct
   int aniState;
   int prevAniState;
   int currFrame;
+  int isActive;
 } SPRITE;
 
-SPRITE player2;
+SPRITE bananas[NUM_BANANAS];
 SPRITE player;
 
 enum { PLAYERFRONT, PLAYERLEFT, PLAYERBACK, PLAYERRIGHT, PLAYERIDLE };

@@ -19,6 +19,7 @@ int selectRow;
 int selectCol;
 int hOff;
 int vOff;
+int paused;
 
 // End of My Stuff
 // ===============

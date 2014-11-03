@@ -8,6 +8,8 @@ void setupInterrupts();
 void interruptHandler();
 void setupSounds();
 void stopSound();
+void pauseSound();
+void unpauseSound();
 
 typedef struct{
   const unsigned char* data;

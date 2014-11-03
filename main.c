@@ -7,6 +7,7 @@ int main() {
 	REG_DISPCTL = MODE0 | BG0_ENABLE | SPRITE_ENABLE;
 	REG_BG0CNT = CBB(0) | SBB(27) | BG_SIZE3 | COLOR256;
 	buttons = BUTTONS;
+  paused = 0;
 	state = STARTSCREEN;
 
 	DMANow(3, spritesTiles, &CHARBLOCKBASE[4], spritesTilesLen / 2);
@@ -24,13 +25,16 @@ int main() {
 				start();
 				break;
 			case GAMESCREEN:
-        initGame();
+        if (paused == 0) {
+          initGame();
+        }
 				game();
 				break;
 			case INSTRUCTIONSCREEN:
 				instruction();
 				break;
 			case PAUSESCREEN:
+        paused = 1;
 				pause();
 				break;
 			case WINSCREEN:

@@ -12,12 +12,15 @@ void initGame() {
   player.aniState = PLAYERFRONT;
 
   hOff = 0;
-  vOff = 0;
+  vOff = 100;
   
-  player2.width = 16;
-  player2.height = 16;
-  player2.bigRow = 32;
-  player2.bigCol = 32;
+  for (int i = 0; i < NUM_BANANAS; i++) {
+    bananas[i].isActive = 1;
+    bananas[i].width = 16;
+    bananas[i].height = 16;
+    bananas[i].bigRow = 200 + i * 40;
+    bananas[i].bigCol = i * 40;
+  }
 }
 
 void game() {
@@ -31,7 +34,13 @@ void game() {
   DMANow(3, spritesTiles, &CHARBLOCKBASE[4], spritesTilesLen/2);
   DMANow(3, spritesPal, SPRITE_PALETTE, 256);
 
-  playSoundA(MainSoundtrack, MAINSOUNDTRACKLEN, MAINSOUNDTRACKFREQ);
+  if (paused == 0) {
+    playSoundA(MainSoundtrack, MAINSOUNDTRACKLEN, MAINSOUNDTRACKFREQ);
+  }
+  else {
+    paused = 0;
+    unpauseSound();
+  }
 
   while (state == GAMESCREEN) {
     oldButtons = buttons;
@@ -57,8 +66,10 @@ void movement() {
   player.bigRow = player.row + vOff + 16;
   player.bigCol = player.col + hOff;
   
-  player2.row = player2.bigRow - vOff;
-  player2.col = player2.bigCol - hOff;
+  for (int i = 0; i < NUM_BANANAS; i++) {
+    bananas[i].row = bananas[i].bigRow - vOff;
+    bananas[i].col = bananas[i].bigCol - hOff;
+  }
 
   checkCollect();
   
@@ -128,26 +139,29 @@ void movement() {
 }
 
 void checkCollect() {
-  if ((player.bigCol + player.width >= player2.col) && 
-    (player.bigCol <= player2.col + player2.width) && 
-    (player.bigRow + player.height >= player2.row) && 
-    (player.bigRow <= player2.row + player2.height)) {
-    collect();
+  for (int i = 0; i < NUM_BANANAS; i++) {
+    if ((bananas[i].isActive == 1) &&
+      (player.bigCol + player.width >= bananas[i].bigCol) && 
+      (player.bigCol <= bananas[i].bigCol + bananas[i].width) && 
+      (player.bigRow + player.height >= bananas[i].bigRow) && 
+      (player.bigRow <= bananas[i].bigRow + bananas[i].height)) {
+      collect(i);
+    }
   }
-  // else if ((player.bigCol + player.width <= player2.col + player2.width) && 
-  //   (player.bigCol + player.width >= player2.col) && 
-  //   (player.bigRow + player.height <= player2.row + player2.height) && 
-  //   (player.bigRow + player.height >= player2.row)) {
+  // else if ((player.bigCol + player.width <= bananas.col + bananas.width) && 
+  //   (player.bigCol + player.width >= bananas.col) && 
+  //   (player.bigRow + player.height <= bananas.row + bananas.height) && 
+  //   (player.bigRow + player.height >= bananas.row)) {
   //   collect();
   // }
-  // else if (player.bigCol + player.width == player2.col) {
-  //   collect(player2);
+  // else if (player.bigCol + player.width == bananas.col) {
+  //   collect(bananas);
   // }
-  // else if (player.bigRow == player2.row + player2.height) {
-  //   collect(player2);
+  // else if (player.bigRow == bananas.row + bananas.height) {
+  //   collect(bananas);
   // }
-  // else if (player.bigRow + player.height == player2.col) {
-  //   collect(player2);
+  // else if (player.bigRow + player.height == bananas.col) {
+  //   collect(bananas);
   // }
   // (player.row + player.height >= enemy[i].row &&
   //               player.row <= enemy[i].row + enemy[i].height &&
@@ -155,9 +169,9 @@ void checkCollect() {
   //               player.col <= enemy[i].col + enemy[i].width)
 }
 
-void collect() {
+void collect(int i) {
   playSoundB(CollectionJingle, COLLECTIONJINGLELEN, COLLECTIONJINGLEFREQ);
-  player2.bigRow = 1000;
+  bananas[i].isActive = 0;
 }
 
 void animate() {
@@ -202,9 +216,19 @@ void updateOAM() {
   shadowOAM[0].attr1 = (COLMASK & player.col) | ATTR1_SIZE32;
   shadowOAM[0].attr2 = SPRITEOFFSET16(4*player.currFrame + 2,4*player.prevAniState + 4);
   
-  shadowOAM[1].attr0 = (ROWMASK & player2.row) | ATTR0_8BPP | ATTR0_SQUARE;
-  shadowOAM[1].attr1 = (COLMASK & player2.col) | ATTR1_SIZE16;
-  shadowOAM[1].attr2 = SPRITEOFFSET16(10,4);
+  // only draw banana if it is currently in the screen boundaries
+  for (int i = 0; i < NUM_BANANAS; i++) {
+    if ((bananas[i].isActive == 1) && 
+        (bananas[i].bigRow + bananas[i].height >= vOff) && 
+        (bananas[i].bigRow <= vOff + SCREEN_HEIGHT)) {
+      shadowOAM[i + 1].attr0 = (ROWMASK & bananas[i].row) | ATTR0_8BPP | ATTR0_SQUARE;
+      shadowOAM[i + 1].attr1 = (COLMASK & bananas[i].col) | ATTR1_SIZE16;
+      shadowOAM[i + 1].attr2 = SPRITEOFFSET16(10,4);
+    }
+    else if (bananas[i].isActive == 0) {
+      shadowOAM[i + 1].attr0 = ATTR0_HIDE;
+    }
+  }
 }
 
 void hideSprites() {

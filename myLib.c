@@ -44,7 +44,12 @@ void initState(int state) {
   hideSprites();
   clearShadowOAM();
 
-  stopSound();
+  if (state == PAUSESCREEN) {
+    pauseSound();
+  }
+  else {
+    stopSound();
+  }
 
   REG_BG0HOFS = 0;
   REG_BG0VOFS = 0;
