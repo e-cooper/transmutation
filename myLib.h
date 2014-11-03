@@ -1,6 +1,28 @@
 #ifndef MY_LIB_H
 #define MY_LIB_H
 
+// My Stuff
+// ========
+
+void initState(int state);
+void start();
+void pause();
+void instruction();
+void pause();
+void win();
+
+typedef enum { STARTSCREEN, GAMESCREEN, INSTRUCTIONSCREEN, PAUSESCREEN, WINSCREEN } screen;
+
+screen state;
+int selector;
+int selectRow;
+int selectCol;
+int hOff;
+int vOff;
+
+// End of My Stuff
+// ===============
+
 typedef unsigned short u16;
 
 #define REG_DISPCTL *(unsigned short *)0x4000000
@@ -222,8 +244,8 @@ enum {IDLE, CHASE, FLEE};
 #define DSB_FIFO_RESET        (1<<15)
 
 // FIFO address defines
-#define REG_FIFO_A          0x040000A0
-#define REG_FIFO_B          0x040000A4
+#define REG_FIFO_A          (u16*)0x040000A0
+#define REG_FIFO_B          (u16*)0x040000A4
 
 
 // *** Tiles =========================================================
