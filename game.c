@@ -219,7 +219,7 @@ void updateOAM() {
   // only draw banana if it is currently in the screen boundaries
   for (int i = 0; i < NUM_BANANAS; i++) {
     if ((bananas[i].isActive == 1) && 
-        (bananas[i].bigRow + bananas[i].height >= vOff) && 
+        (bananas[i].bigRow + bananas[i].height + 1 >= vOff) && 
         (bananas[i].bigRow <= vOff + SCREEN_HEIGHT)) {
       shadowOAM[i + 1].attr0 = (ROWMASK & bananas[i].row) | ATTR0_8BPP | ATTR0_SQUARE;
       shadowOAM[i + 1].attr1 = (COLMASK & bananas[i].col) | ATTR1_SIZE16;
