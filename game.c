@@ -46,6 +46,8 @@ void game() {
     oldButtons = buttons;
     buttons = BUTTONS;
 
+    hideSprites();
+
     if (BUTTON_PRESSED(BUTTON_START)) {
       state = PAUSESCREEN;
     }
@@ -77,7 +79,11 @@ void movement() {
   {
     if (collisionmainmapBitmap[OFFSET(player.bigRow - player.rdel, player.bigCol + 1, 512)] == WHITE &&
         collisionmainmapBitmap[OFFSET(player.bigRow - player.rdel, player.bigCol + player.width - 1, 512)] == WHITE) {
-      if (player.row > 30) {
+      // if (player.row > 30) {
+      //   player.row -= player.rdel;
+      // }
+      // else 
+      if (player.row > SCREEN_HEIGHT/2 - player.height/2) {
         player.row -= player.rdel;
       }
       else if (vOff > 0) {
@@ -92,7 +98,11 @@ void movement() {
   {
     if (collisionmainmapBitmap[OFFSET(player.bigRow + player.height + player.rdel, player.bigCol + 1, 512)] == WHITE &&
         collisionmainmapBitmap[OFFSET(player.bigRow + player.height + player.rdel, player.bigCol + player.width - 1, 512)] == WHITE) {
-      if (player.row - player.height < SCREEN_HEIGHT - 60) {
+      // if (player.row - player.height < SCREEN_HEIGHT - 60) {
+      //   player.row += player.rdel;
+      // }
+      // else 
+      if (player.row < SCREEN_HEIGHT/2 - player.height/2) {
         player.row += player.rdel;
       }
       else if (vOff < COLL_MAP_SIZE - SCREEN_HEIGHT) {
@@ -107,7 +117,11 @@ void movement() {
   {
     if (collisionmainmapBitmap[OFFSET(player.bigRow, player.bigCol, 512)] == WHITE &&
         collisionmainmapBitmap[OFFSET(player.bigRow + player.height, player.bigCol, 512)] == WHITE) {
-      if (player.col > 30) {
+      // if (player.col > 30) {
+      //   player.col -= player.cdel;
+      // }
+      // else 
+      if (player.col > SCREEN_WIDTH/2 - player.width/2) {
         player.col -= player.cdel;
       }
       else if (hOff > 0) {
@@ -122,13 +136,17 @@ void movement() {
   {
     if (collisionmainmapBitmap[OFFSET(player.bigRow, player.bigCol + player.width, 512)] == WHITE &&
         collisionmainmapBitmap[OFFSET(player.bigRow + player.height, player.bigCol + player.width, 512)] == WHITE) {
-      if (player.col + player.width < 240 - 30) {
+      // if (player.col + player.width < 240 - 30) {
+      //   player.col += player.cdel;
+      // }
+      // else 
+      if (player.col < SCREEN_WIDTH/2 - player.width/2) {
         player.col += player.cdel;
       }
       else if (hOff < COLL_MAP_SIZE - SCREEN_WIDTH) {
         hOff++;
       }
-      else if (player.col + player.width < 240) {
+      else if (player.col + player.width < SCREEN_WIDTH) {
         player.col += player.cdel;
       }
     }
@@ -225,9 +243,9 @@ void updateOAM() {
       shadowOAM[i + 1].attr1 = (COLMASK & bananas[i].col) | ATTR1_SIZE16;
       shadowOAM[i + 1].attr2 = SPRITEOFFSET16(10,4);
     }
-    else if (bananas[i].isActive == 0) {
-      shadowOAM[i + 1].attr0 = ATTR0_HIDE;
-    }
+    // else if (bananas[i].isActive == 0) {
+    //   shadowOAM[i + 1].attr0 = ATTR0_HIDE;
+    // }
   }
 }
 
