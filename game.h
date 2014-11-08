@@ -28,8 +28,7 @@ OBJ_ATTR shadowOAM[128];
 #define COLL_MAP_SIZE 512
 #define NUM_BANANAS 10
 
-typedef struct  
-{
+typedef struct {
   int row;
   int col;
   int bigRow;
@@ -43,9 +42,19 @@ typedef struct
   int prevAniState;
   int currFrame;
   int isActive;
+  int score;
+  int state;
 } SPRITE;
 
 SPRITE bananas[NUM_BANANAS];
 SPRITE player;
 
 enum { PLAYERFRONT, PLAYERLEFT, PLAYERBACK, PLAYERRIGHT, PLAYERIDLE };
+enum { HUMAN, MONKEY = 2, MOUSE = 4 };
+enum { CHECKUP, CHECKRIGHT, CHECKDOWN, CHECKLEFT };
+
+// typedef struct {
+//   int max_score;
+//   int needed_score;
+//   int num_enemies;
+// } LEVEL;
