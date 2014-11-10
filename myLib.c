@@ -22,21 +22,20 @@ void initState(int state) {
   	DMANow(3, startScreenMap, &SCREENBLOCKBASE[27], startScreenMapLen);
 
   	selector = 0;
-	  selectRow = 92;
-	  selectCol = 70;
+	  selectRow = 100;
+	  selectCol = 56;
 	}
 	else if (state == PAUSESCREEN) {
-		loadPalette(pauseScreenPal);
+		loadPalette(startScreenPal);
   	DMANow(3, pauseScreenTiles, &CHARBLOCKBASE[0], pauseScreenTilesLen);
   	DMANow(3, pauseScreenMap, &SCREENBLOCKBASE[27], pauseScreenMapLen);
 	}
 	else if (state == INSTRUCTIONSCREEN) {
-		loadPalette(instructionScreenPal);
   	DMANow(3, instructionScreenTiles, &CHARBLOCKBASE[0], instructionScreenTilesLen);
   	DMANow(3, instructionScreenMap, &SCREENBLOCKBASE[27], instructionScreenMapLen);
 	}
 	else if (state == WINSCREEN) {
-		loadPalette(winScreenPal);
+		loadPalette(startScreenPal);
   	DMANow(3, winScreenTiles, &CHARBLOCKBASE[0], winScreenTilesLen);
   	DMANow(3, winScreenMap, &SCREENBLOCKBASE[27], winScreenMapLen);
 	}

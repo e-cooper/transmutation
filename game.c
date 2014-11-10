@@ -10,16 +10,21 @@ void initGame() {
   player.aniCounter = 0;
   player.currFrame = 0;
   player.aniState = PLAYERFRONT;
+  player.score = 0;
+  player.state = HUMAN;
 
   hOff = 0;
   vOff = 100;
+
+  int rowVals[] = { 5*8, 5*8, 200, 210, 220, 230, 240, 250, 260, 270};
+  int colVals[] = { 8*8, 20*8, 100, 100, 100, 100, 100, 100, 100, 100};
   
   for (int i = 0; i < NUM_BANANAS; i++) {
     bananas[i].isActive = 1;
     bananas[i].width = 16;
     bananas[i].height = 16;
-    bananas[i].bigRow = 200 + i * 40;
-    bananas[i].bigCol = i * 40;
+    bananas[i].bigRow = rowVals[i];
+    bananas[i].bigCol = colVals[i];
   }
 }
 
@@ -46,14 +51,33 @@ void game() {
     oldButtons = buttons;
     buttons = BUTTONS;
 
+    hideSprites();
+
     if (BUTTON_PRESSED(BUTTON_START)) {
       state = PAUSESCREEN;
     }
     if (BUTTON_PRESSED(BUTTON_A)) {
+      if (player.state == FROG) {
+        player.state = HUMAN;
+      }
+      else {
+        player.state = FROG;
+      }
+    }
+    if (BUTTON_PRESSED(BUTTON_B)) {
+      if (player.state == CLIMBER) {
+        player.state = HUMAN;
+      }
+      else {
+        player.state = CLIMBER;
+      }
+    }
+    if (player.score >= NUM_BANANAS - 2) {
       state = WINSCREEN;
     }
 
     movement();
+    checkCollect();
     animate();
     updateOAM();
 
@@ -64,20 +88,17 @@ void game() {
 
 void movement() {
   player.bigRow = player.row + vOff + 16;
-  player.bigCol = player.col + hOff;
+  player.bigCol = player.col + hOff + 1;
   
   for (int i = 0; i < NUM_BANANAS; i++) {
     bananas[i].row = bananas[i].bigRow - vOff;
     bananas[i].col = bananas[i].bigCol - hOff;
   }
-
-  checkCollect();
   
   if(BUTTON_HELD(BUTTON_UP))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow - player.rdel, player.bigCol + 1, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow - player.rdel, player.bigCol + player.width - 1, 512)] == WHITE) {
-      if (player.row > 30) {
+    if (isPassable(CHECKUP)) {
+      if (player.row > SCREEN_HEIGHT/2 - player.height/2) {
         player.row -= player.rdel;
       }
       else if (vOff > 0) {
@@ -90,9 +111,8 @@ void movement() {
   }
   if(BUTTON_HELD(BUTTON_DOWN))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow + player.height + player.rdel, player.bigCol + 1, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow + player.height + player.rdel, player.bigCol + player.width - 1, 512)] == WHITE) {
-      if (player.row - player.height < SCREEN_HEIGHT - 60) {
+    if (isPassable(CHECKDOWN)) {
+      if (player.row < SCREEN_HEIGHT/2 - player.height/2) {
         player.row += player.rdel;
       }
       else if (vOff < COLL_MAP_SIZE - SCREEN_HEIGHT) {
@@ -105,9 +125,8 @@ void movement() {
   }
   if(BUTTON_HELD(BUTTON_LEFT))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow, player.bigCol, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow + player.height, player.bigCol, 512)] == WHITE) {
-      if (player.col > 30) {
+    if (isPassable(CHECKLEFT)) {
+      if (player.col > SCREEN_WIDTH/2 - player.width/2) {
         player.col -= player.cdel;
       }
       else if (hOff > 0) {
@@ -120,15 +139,14 @@ void movement() {
   }
   if(BUTTON_HELD(BUTTON_RIGHT))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow, player.bigCol + player.width, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow + player.height, player.bigCol + player.width, 512)] == WHITE) {
-      if (player.col + player.width < 240 - 30) {
+    if (isPassable(CHECKRIGHT)) {
+      if (player.col < SCREEN_WIDTH/2 - player.width/2) {
         player.col += player.cdel;
       }
       else if (hOff < COLL_MAP_SIZE - SCREEN_WIDTH) {
         hOff++;
       }
-      else if (player.col + player.width < 240) {
+      else if (player.col + player.width < SCREEN_WIDTH) {
         player.col += player.cdel;
       }
     }
@@ -138,7 +156,57 @@ void movement() {
   REG_BG0VOFS = vOff;
 }
 
+int isPassable(int direction) {
+  int passable = 0, colorA, colorB;
+
+  if (direction == CHECKUP) {
+    colorA = defColor(player.bigRow - player.rdel, player.bigCol + 1, 512);
+    colorB = defColor(player.bigRow - player.rdel, player.bigCol + player.width - 1, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  else if (direction == CHECKDOWN) {
+    colorA = defColor(player.bigRow + player.height + player.rdel, player.bigCol + 1, 512);
+    colorB = defColor(player.bigRow + player.height + player.rdel, player.bigCol + player.width - 1, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  else if (direction == CHECKLEFT) {
+    colorA = defColor(player.bigRow, player.bigCol, 512);
+    colorB = defColor(player.bigRow + player.height, player.bigCol, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  else if (direction == CHECKRIGHT) {
+    colorA = defColor(player.bigRow, player.bigCol + player.width, 512);
+    colorB = defColor(player.bigRow + player.height, player.bigCol + player.width, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  return passable;
+}
+
+int checkColor(int colorA, int colorB) {
+  int canPass = 0;
+
+  if (colorA == WHITE && colorB == WHITE) {
+    canPass = 1;
+  }
+  else if (player.state == FROG && 
+          (colorA == GREEN || colorA == WHITE) && 
+          (colorB == GREEN || colorB == WHITE)) {
+    canPass = 1;
+  }
+  else if (player.state == CLIMBER && 
+          (colorA == BLUE || colorA == WHITE) && 
+          (colorB == BLUE || colorB == WHITE)) {
+    canPass = 1;
+  }
+  return canPass;
+}
+
+int defColor(int row, int col, int size) {
+  return collisionmainmapBitmap[OFFSET(row, col, size)];
+}
+
 void checkCollect() {
+  // if the banana is still active and the player sprite touches it, mark it as collected
   for (int i = 0; i < NUM_BANANAS; i++) {
     if ((bananas[i].isActive == 1) &&
       (player.bigCol + player.width >= bananas[i].bigCol) && 
@@ -148,30 +216,12 @@ void checkCollect() {
       collect(i);
     }
   }
-  // else if ((player.bigCol + player.width <= bananas.col + bananas.width) && 
-  //   (player.bigCol + player.width >= bananas.col) && 
-  //   (player.bigRow + player.height <= bananas.row + bananas.height) && 
-  //   (player.bigRow + player.height >= bananas.row)) {
-  //   collect();
-  // }
-  // else if (player.bigCol + player.width == bananas.col) {
-  //   collect(bananas);
-  // }
-  // else if (player.bigRow == bananas.row + bananas.height) {
-  //   collect(bananas);
-  // }
-  // else if (player.bigRow + player.height == bananas.col) {
-  //   collect(bananas);
-  // }
-  // (player.row + player.height >= enemy[i].row &&
-  //               player.row <= enemy[i].row + enemy[i].height &&
-  //               player.col + player.width >= enemy[i].col &&
-  //               player.col <= enemy[i].col + enemy[i].width)
 }
 
 void collect(int i) {
   playSoundB(CollectionJingle, COLLECTIONJINGLELEN, COLLECTIONJINGLEFREQ);
   bananas[i].isActive = 0;
+  player.score++;
 }
 
 void animate() {
@@ -214,7 +264,7 @@ void animate() {
 void updateOAM() {
   shadowOAM[0].attr0 = (ROWMASK & player.row) | ATTR0_8BPP | ATTR0_TALL;
   shadowOAM[0].attr1 = (COLMASK & player.col) | ATTR1_SIZE32;
-  shadowOAM[0].attr2 = SPRITEOFFSET16(4*player.currFrame + 2,4*player.prevAniState + 4);
+  shadowOAM[0].attr2 = SPRITEOFFSET16((4 * player.state) + (4 * player.currFrame) + 2, 4 * player.prevAniState + 4);
   
   // only draw banana if it is currently in the screen boundaries
   for (int i = 0; i < NUM_BANANAS; i++) {
@@ -223,10 +273,7 @@ void updateOAM() {
         (bananas[i].bigRow <= vOff + SCREEN_HEIGHT)) {
       shadowOAM[i + 1].attr0 = (ROWMASK & bananas[i].row) | ATTR0_8BPP | ATTR0_SQUARE;
       shadowOAM[i + 1].attr1 = (COLMASK & bananas[i].col) | ATTR1_SIZE16;
-      shadowOAM[i + 1].attr2 = SPRITEOFFSET16(10,4);
-    }
-    else if (bananas[i].isActive == 0) {
-      shadowOAM[i + 1].attr0 = ATTR0_HIDE;
+      shadowOAM[i + 1].attr2 = SPRITEOFFSET16(4,0);
     }
   }
 }

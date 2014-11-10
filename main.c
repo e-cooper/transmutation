@@ -55,16 +55,16 @@ void start() {
     if (BUTTON_PRESSED(BUTTON_UP)) {
       if (selector == 1) {
         selector = 0;
-        selectRow = 92;
-        selectCol = 70;
+        selectRow = 100;
+        selectCol = 56;
       }
     }
 
     if (BUTTON_PRESSED(BUTTON_DOWN)) {
       if (selector == 0) {
         selector = 1;
-        selectRow = 124;
-        selectCol = 70;
+        selectRow = 132;
+        selectCol = 56;
       }
     }
 
@@ -96,7 +96,8 @@ void pause() {
       state = GAMESCREEN;
     }
     if (BUTTON_PRESSED(BUTTON_A)) {
-      // state = PAUSESCREEN;
+      paused = 0;
+      state = STARTSCREEN;
     }
 
     DMANow(3, shadowOAM, OAM, 512);
