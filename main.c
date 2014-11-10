@@ -49,8 +49,7 @@ void start() {
   initState(STARTSCREEN);
 
   while (state == STARTSCREEN) {
-    oldButtons = buttons;
-    buttons = BUTTONS;
+    cleanSlate();
 
     if (BUTTON_PRESSED(BUTTON_UP)) {
       if (selector == 1) {
@@ -89,8 +88,7 @@ void pause() {
   initState(PAUSESCREEN);
 
   while (state == PAUSESCREEN) {
-    oldButtons = buttons;
-    buttons = BUTTONS;
+    cleanSlate();
 
     if (BUTTON_PRESSED(BUTTON_START)) {
       state = GAMESCREEN;
@@ -108,8 +106,7 @@ void instruction() {
   initState(INSTRUCTIONSCREEN);
 
   while (state == INSTRUCTIONSCREEN) {
-    oldButtons = buttons;
-    buttons = BUTTONS;
+    cleanSlate();
 
     if (BUTTON_PRESSED(BUTTON_START)) {
       state = STARTSCREEN;
@@ -123,8 +120,7 @@ void win() {
   initState(WINSCREEN);
 
   while (state == WINSCREEN) {
-    oldButtons = buttons;
-    buttons = BUTTONS;
+    cleanSlate();
 
     if (BUTTON_PRESSED(BUTTON_START)) {
       state = STARTSCREEN;
@@ -132,4 +128,10 @@ void win() {
 
     DMANow(3, shadowOAM, OAM, 512);
   }
+}
+
+void cleanSlate() {
+  oldButtons = buttons;
+  buttons = BUTTONS;
+  hideSprites();
 }

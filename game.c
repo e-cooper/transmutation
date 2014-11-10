@@ -12,6 +12,7 @@ void initGame() {
   player.aniState = PLAYERFRONT;
   player.score = 0;
   player.state = HUMAN;
+  player.hasWon = 0;
 
   hOff = 0;
   vOff = 100;
@@ -26,6 +27,12 @@ void initGame() {
     bananas[i].bigRow = rowVals[i];
     bananas[i].bigCol = colVals[i];
   }
+
+  score.width = 8;
+  score.height = 8;
+  score.row = 4;
+  score.col = 4;
+  score.aniState = player.score;
 }
 
 void game() {
@@ -48,10 +55,7 @@ void game() {
   }
 
   while (state == GAMESCREEN) {
-    oldButtons = buttons;
-    buttons = BUTTONS;
-
-    hideSprites();
+    cleanSlate();
 
     if (BUTTON_PRESSED(BUTTON_START)) {
       state = PAUSESCREEN;
@@ -72,7 +76,7 @@ void game() {
         player.state = CLIMBER;
       }
     }
-    if (player.score >= NUM_BANANAS - 2) {
+    if (player.hasWon == 1) {
       state = WINSCREEN;
     }
 
@@ -185,7 +189,11 @@ int isPassable(int direction) {
 int checkColor(int colorA, int colorB) {
   int canPass = 0;
 
-  if (colorA == WHITE && colorB == WHITE) {
+  if ((player.score >= NUM_BANANAS - 2) && 
+      colorA == RED && colorB == RED) {
+    player.hasWon = 1;
+  }
+  else if (colorA == WHITE && colorB == WHITE) {
     canPass = 1;
   }
   else if (player.state == FROG && 
@@ -222,6 +230,7 @@ void collect(int i) {
   playSoundB(CollectionJingle, COLLECTIONJINGLELEN, COLLECTIONJINGLEFREQ);
   bananas[i].isActive = 0;
   player.score++;
+  score.aniState++;
 }
 
 void animate() {
@@ -262,18 +271,31 @@ void animate() {
 }
 
 void updateOAM() {
+  // Player sprite
   shadowOAM[0].attr0 = (ROWMASK & player.row) | ATTR0_8BPP | ATTR0_TALL;
   shadowOAM[0].attr1 = (COLMASK & player.col) | ATTR1_SIZE32;
   shadowOAM[0].attr2 = SPRITEOFFSET16((4 * player.state) + (4 * player.currFrame) + 2, 4 * player.prevAniState + 4);
-  
+  // Score icon sprite
+  shadowOAM[1].attr0 = (ROWMASK & score.row) | ATTR0_8BPP | ATTR0_SQUARE;
+  shadowOAM[1].attr1 = (COLMASK & score.col) | ATTR1_SIZE8;
+  shadowOAM[1].attr2 = SPRITEOFFSET16(6, 0);
+  // First score digit sprite
+  shadowOAM[2].attr0 = (ROWMASK & score.row) | ATTR0_8BPP | ATTR0_SQUARE;
+  shadowOAM[2].attr1 = (COLMASK & (score.col + score.width)) | ATTR1_SIZE8;
+  shadowOAM[2].attr2 = SPRITEOFFSET16(0, 2 * (score.aniState / 10));
+  // Second score digit sprite
+  shadowOAM[3].attr0 = (ROWMASK & score.row) | ATTR0_8BPP | ATTR0_SQUARE;
+  shadowOAM[3].attr1 = (COLMASK & (score.col + score.width * 2)) | ATTR1_SIZE8;
+  shadowOAM[3].attr2 = SPRITEOFFSET16(0, 2 * (score.aniState % 10));
+  // Banana pickup sprites
   // only draw banana if it is currently in the screen boundaries
   for (int i = 0; i < NUM_BANANAS; i++) {
     if ((bananas[i].isActive == 1) && 
         (bananas[i].bigRow + bananas[i].height + 1 >= vOff) && 
         (bananas[i].bigRow <= vOff + SCREEN_HEIGHT)) {
-      shadowOAM[i + 1].attr0 = (ROWMASK & bananas[i].row) | ATTR0_8BPP | ATTR0_SQUARE;
-      shadowOAM[i + 1].attr1 = (COLMASK & bananas[i].col) | ATTR1_SIZE16;
-      shadowOAM[i + 1].attr2 = SPRITEOFFSET16(4,0);
+      shadowOAM[i + 4].attr0 = (ROWMASK & bananas[i].row) | ATTR0_8BPP | ATTR0_SQUARE;
+      shadowOAM[i + 4].attr1 = (COLMASK & bananas[i].col) | ATTR1_SIZE16;
+      shadowOAM[i + 4].attr2 = SPRITEOFFSET16(4,0);
     }
   }
 }

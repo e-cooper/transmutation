@@ -10,6 +10,7 @@ void pause();
 void instruction();
 void pause();
 void win();
+void cleanSlate();
 
 typedef enum { STARTSCREEN, GAMESCREEN, INSTRUCTIONSCREEN, PAUSESCREEN, WINSCREEN } screen;
 

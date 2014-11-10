@@ -47,10 +47,12 @@ typedef struct {
   int isActive;
   int score;
   int state;
+  int hasWon;
 } SPRITE;
 
 SPRITE bananas[NUM_BANANAS];
 SPRITE player;
+SPRITE score;
 
 enum { PLAYERFRONT, PLAYERLEFT, PLAYERBACK, PLAYERRIGHT, PLAYERIDLE };
 enum { HUMAN, FROG = 2, CLIMBER = 4 };
