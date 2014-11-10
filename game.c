@@ -15,13 +15,16 @@ void initGame() {
 
   hOff = 0;
   vOff = 100;
+
+  int rowVals[] = { 5*8, 5*8, 200, 210, 220, 230, 240, 250, 260, 270};
+  int colVals[] = { 8*8, 20*8, 100, 100, 100, 100, 100, 100, 100, 100};
   
   for (int i = 0; i < NUM_BANANAS; i++) {
     bananas[i].isActive = 1;
     bananas[i].width = 16;
     bananas[i].height = 16;
-    bananas[i].bigRow = 200 + i * 20;
-    bananas[i].bigCol = i * 40;
+    bananas[i].bigRow = rowVals[i];
+    bananas[i].bigCol = colVals[i];
   }
 }
 
@@ -54,11 +57,19 @@ void game() {
       state = PAUSESCREEN;
     }
     if (BUTTON_PRESSED(BUTTON_A)) {
-      if (player.state != HUMAN) {
+      if (player.state == FROG) {
         player.state = HUMAN;
       }
       else {
-        player.state = MONKEY;
+        player.state = FROG;
+      }
+    }
+    if (BUTTON_PRESSED(BUTTON_B)) {
+      if (player.state == CLIMBER) {
+        player.state = HUMAN;
+      }
+      else {
+        player.state = CLIMBER;
       }
     }
     if (player.score >= NUM_BANANAS - 2) {
@@ -86,8 +97,7 @@ void movement() {
   
   if(BUTTON_HELD(BUTTON_UP))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow - player.rdel, player.bigCol + 1, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow - player.rdel, player.bigCol + player.width - 1, 512)] == WHITE) {
+    if (isPassable(CHECKUP)) {
       if (player.row > SCREEN_HEIGHT/2 - player.height/2) {
         player.row -= player.rdel;
       }
@@ -101,8 +111,7 @@ void movement() {
   }
   if(BUTTON_HELD(BUTTON_DOWN))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow + player.height + player.rdel, player.bigCol + 1, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow + player.height + player.rdel, player.bigCol + player.width - 1, 512)] == WHITE) {
+    if (isPassable(CHECKDOWN)) {
       if (player.row < SCREEN_HEIGHT/2 - player.height/2) {
         player.row += player.rdel;
       }
@@ -116,8 +125,7 @@ void movement() {
   }
   if(BUTTON_HELD(BUTTON_LEFT))
   {
-    if (collisionmainmapBitmap[OFFSET(player.bigRow, player.bigCol, 512)] == WHITE &&
-        collisionmainmapBitmap[OFFSET(player.bigRow + player.height, player.bigCol, 512)] == WHITE) {
+    if (isPassable(CHECKLEFT)) {
       if (player.col > SCREEN_WIDTH/2 - player.width/2) {
         player.col -= player.cdel;
       }
@@ -131,9 +139,7 @@ void movement() {
   }
   if(BUTTON_HELD(BUTTON_RIGHT))
   {
-    
-    if (checkColor(player.bigRow, player.bigCol + player.width, 512) == WHITE &&
-        checkColor(player.bigRow + player.height, player.bigCol + player.width, 512) == WHITE) {
+    if (isPassable(CHECKRIGHT)) {
       if (player.col < SCREEN_WIDTH/2 - player.width/2) {
         player.col += player.cdel;
       }
@@ -150,7 +156,52 @@ void movement() {
   REG_BG0VOFS = vOff;
 }
 
-int checkColor(int row, int col, int size) {
+int isPassable(int direction) {
+  int passable = 0, colorA, colorB;
+
+  if (direction == CHECKUP) {
+    colorA = defColor(player.bigRow - player.rdel, player.bigCol + 1, 512);
+    colorB = defColor(player.bigRow - player.rdel, player.bigCol + player.width - 1, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  else if (direction == CHECKDOWN) {
+    colorA = defColor(player.bigRow + player.height + player.rdel, player.bigCol + 1, 512);
+    colorB = defColor(player.bigRow + player.height + player.rdel, player.bigCol + player.width - 1, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  else if (direction == CHECKLEFT) {
+    colorA = defColor(player.bigRow, player.bigCol, 512);
+    colorB = defColor(player.bigRow + player.height, player.bigCol, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  else if (direction == CHECKRIGHT) {
+    colorA = defColor(player.bigRow, player.bigCol + player.width, 512);
+    colorB = defColor(player.bigRow + player.height, player.bigCol + player.width, 512);
+    passable = checkColor(colorA, colorB);
+  }
+  return passable;
+}
+
+int checkColor(int colorA, int colorB) {
+  int canPass = 0;
+
+  if (colorA == WHITE && colorB == WHITE) {
+    canPass = 1;
+  }
+  else if (player.state == FROG && 
+          (colorA == GREEN || colorA == WHITE) && 
+          (colorB == GREEN || colorB == WHITE)) {
+    canPass = 1;
+  }
+  else if (player.state == CLIMBER && 
+          (colorA == BLUE || colorA == WHITE) && 
+          (colorB == BLUE || colorB == WHITE)) {
+    canPass = 1;
+  }
+  return canPass;
+}
+
+int defColor(int row, int col, int size) {
   return collisionmainmapBitmap[OFFSET(row, col, size)];
 }
 

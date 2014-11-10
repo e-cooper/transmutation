@@ -17,6 +17,9 @@ void movement();
 void updateOAM();
 void checkCollect();
 void collect(int i);
+int defColor(int row, int col, int size);
+int isPassable(int direction);
+int checkColor(int colorA, int colorB);
 
 unsigned int buttons;
 unsigned int oldButtons;
@@ -50,11 +53,5 @@ SPRITE bananas[NUM_BANANAS];
 SPRITE player;
 
 enum { PLAYERFRONT, PLAYERLEFT, PLAYERBACK, PLAYERRIGHT, PLAYERIDLE };
-enum { HUMAN, MONKEY = 2, MOUSE = 4 };
-enum { CHECKUP, CHECKRIGHT, CHECKDOWN, CHECKLEFT };
-
-// typedef struct {
-//   int max_score;
-//   int needed_score;
-//   int num_enemies;
-// } LEVEL;
+enum { HUMAN, FROG = 2, CLIMBER = 4 };
+enum { CHECKUP, CHECKDOWN, CHECKLEFT, CHECKRIGHT };
