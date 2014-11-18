@@ -10,9 +10,12 @@ void pause();
 void instruction();
 void pause();
 void win();
+void lose();
 void cleanSlate();
 
-typedef enum { STARTSCREEN, GAMESCREEN, INSTRUCTIONSCREEN, PAUSESCREEN, WINSCREEN } screen;
+#define NELEMS(x)  (int) (sizeof(x) / sizeof(x[0]))
+
+typedef enum { STARTSCREEN, GAMESCREEN, INSTRUCTIONSCREEN, PAUSESCREEN, WINSCREEN, LOSESCREEN } screen;
 
 screen state;
 int selector;

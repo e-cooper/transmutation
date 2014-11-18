@@ -26,7 +26,7 @@ int main() {
 				break;
 			case GAMESCREEN:
         if (paused == 0) {
-          initGame();
+          initSprites();
         }
 				game();
 				break;
@@ -40,6 +40,9 @@ int main() {
 			case WINSCREEN:
 				win();
 				break;
+      case LOSESCREEN:
+        lose();
+        break;
 		}
 	}
 	return 0;
@@ -120,6 +123,20 @@ void win() {
   initState(WINSCREEN);
 
   while (state == WINSCREEN) {
+    cleanSlate();
+
+    if (BUTTON_PRESSED(BUTTON_START)) {
+      state = STARTSCREEN;
+    }
+
+    DMANow(3, shadowOAM, OAM, 512);
+  }
+}
+
+void lose() {
+  initState(LOSESCREEN);
+
+  while (state == LOSESCREEN) {
     cleanSlate();
 
     if (BUTTON_PRESSED(BUTTON_START)) {

@@ -1,6 +1,7 @@
 #include "myLib.h"
 #include "game.h"
 #include "gb_images/winScreen.h"
+#include "gb_images/loseScreen.h"
 #include "gb_images/instructionScreen.h"
 #include "gb_images/pauseScreen.h"
 #include "gb_images/startScreen.h"
@@ -39,6 +40,11 @@ void initState(int state) {
   	DMANow(3, winScreenTiles, &CHARBLOCKBASE[0], winScreenTilesLen);
   	DMANow(3, winScreenMap, &SCREENBLOCKBASE[27], winScreenMapLen);
 	}
+  else if (state == LOSESCREEN) {
+    loadPalette(startScreenPal);
+    DMANow(3, loseScreenTiles, &CHARBLOCKBASE[0], loseScreenTilesLen);
+    DMANow(3, loseScreenMap, &SCREENBLOCKBASE[27], loseScreenMapLen);
+  }
 
   hideSprites();
   clearShadowOAM();
