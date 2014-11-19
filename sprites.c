@@ -282,7 +282,7 @@ void collect(int i) {
 }
 
 void damagePlayer() {
-  playSoundB(Damage, DAMAGELEN, DAMAGEFREQ);
+  playSoundB(HurtSound, HURTSOUNDLEN, HURTSOUNDFREQ);
   player.health--;
   player.vulnerable = 0;
   health.aniState--;

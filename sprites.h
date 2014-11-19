@@ -4,7 +4,7 @@
 #include "sound.h"
 #include "gb_images/collisionmainmap.h"
 #include "gb_sounds/CollectionJingle.h"
-#include "gb_sounds/Damage.h"
+#include "gb_sounds/HurtSound.h"
 
 unsigned int buttons;
 unsigned int oldButtons;
