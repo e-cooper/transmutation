@@ -4,6 +4,8 @@ void game() {
   loadPalette(mainmapPal);
   DMANow(3, mainmapTiles, &CHARBLOCKBASE[0], mainmapTilesLen);
   DMANow(3, mainmapMap, &SCREENBLOCKBASE[27], mainmapMapLen);
+  DMANow(3, cloudsTiles, &CHARBLOCKBASE[1], cloudsTilesLen);
+  DMANow(3, cloudsMap, &SCREENBLOCKBASE[25], cloudsMapLen);
 
   hideSprites();
   clearShadowOAM();
@@ -22,8 +24,6 @@ void game() {
   while (state == GAMESCREEN) {
     cleanSlate();
 
-    checkPlayerState();
-
     moveEnemies();
     movement();
     animate();
@@ -31,5 +31,7 @@ void game() {
 
     DMANow(3, shadowOAM, OAM, 512);
     waitForVblank();
+
+    checkPlayerState();
   }
 }

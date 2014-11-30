@@ -23,6 +23,8 @@ int selectRow;
 int selectCol;
 int hOff;
 int vOff;
+int hOffClouds;
+int cloudCounter;
 int paused;
 
 // End of My Stuff

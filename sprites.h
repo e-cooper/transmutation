@@ -26,6 +26,7 @@ typedef struct {
   int cdel;
   int width;
   int height;
+  int waitTime;
   int aniCounter;
   int aniState;
   int prevAniState;

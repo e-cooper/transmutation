@@ -19,6 +19,7 @@ void initSprites() {
 
   hOff = 0;
   vOff = 100;
+  hOffClouds = 0;
 
   int rowVals[] = { 5*8, 5*8, 200, 210, 220, 230, 240, 250, 260, 270};
   int colVals[] = { 8*8, 20*8, 100, 100, 100, 100, 100, 100, 100, 100};
@@ -31,6 +32,10 @@ void initSprites() {
     bananas[i].bigCol = colVals[i];
   }
 
+  // int enemyRowVals[] = { 5*8, 5*8, 200, 210, 220, 230, 240, 250, 260, 270};
+  // int enemyColVals[] = { 8*8, 20*8, 100, 100, 100, 100, 100, 100, 100, 100};
+  // int enemyWaitTimes[] = { };
+
   for (int i = 0; i < NUM_ENEMIES; i++) {
     enemies[i].aniCounter = 0;
     enemies[i].aniState = 2;
@@ -41,6 +46,7 @@ void initSprites() {
     enemies[i].height = 16;
     enemies[i].bigRow = i * 20 + 200;
     enemies[i].bigCol = i * 20 + 20;
+    enemies[i].waitTime = 60;
   }
 
   score.width = 8;
@@ -93,7 +99,7 @@ void moveEnemies() {
     enemies[i].prevAniState = enemies[i].aniState;
     enemies[i].aniCounter++;
 
-    if (enemies[i].aniCounter % 60 == 0) {
+    if (enemies[i].aniCounter % enemies[i].waitTime == 0) {
       enemies[i].aniCounter = 0;
       if (enemies[i].rdel >= 0) {
         enemies[i].rdel = -1;
@@ -190,6 +196,13 @@ void movement() {
   
   REG_BG0HOFS = hOff;
   REG_BG0VOFS = vOff;
+
+
+  cloudCounter++;
+  if(cloudCounter%10==0){
+    hOffClouds++; 
+  }
+  REG_BG1HOFS = hOffClouds;
 
   for (int i = 0; i < NUM_BANANAS; i++) {
     if (checkCollision(bananas[i])) {
