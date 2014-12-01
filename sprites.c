@@ -21,6 +21,7 @@ void initSprites() {
   vOff = 100;
   hOffClouds = 0;
 
+  // left tree, right tree, cliff, beach, grave tree, mermaid, field, tree grove, exit
   int rowVals[] = { 5*8, 5*8, 13*8, 31*8, 58*8, 38*8, 46*8, 61*8, 48*8 };
   int colVals[] = { 8*8, 20*8, 61*8, 62*8, 14*8, 4*8, 19*8, 22*8, 50*8 };
   
@@ -32,9 +33,10 @@ void initSprites() {
     bananas[i].bigCol = colVals[i];
   }
 
-  int enemyRowVals[] = { 7*8, 37*8, 13*8, 31*8, 58*8, 38*8, 46*8, 61*8, 48*8, 200 };
-  int enemyColVals[] = { 10*8, 58*8, 61*8, 62*8, 14*8, 4*8, 19*8, 22*8, 50*8, 200 };
-  int enemyWaitTimes[] = { 40, 140, 60, 80, 10, 10, 10, 10, 10, 10 };
+  // tree, beach, fences, field left, field right, spawn, grave, exit
+  int enemyRowVals[] = { 7*8, 37*8, 32*8, 51*8, 52*8, 28*8, 62*8, 51*8 };
+  int enemyColVals[] = { 10*8, 58*8, 40*8, 15*8, 24*8, 8*8, 7*8, 41*8 };
+  int enemyWaitTimes[] = { 40, 140, 100, 140, 80, 60, 60, 80 };
 
   for (int i = 0; i < NUM_ENEMIES; i++) {
     enemies[i].aniCounter = 0;

@@ -16,7 +16,7 @@ OBJ_ATTR shadowOAM[128];
 #define COLL_MAP_SIZE 512
 #define NUM_BANANAS 9
 #define BANANAS_NEEDED 8
-#define NUM_ENEMIES 10
+#define NUM_ENEMIES 8
 
 typedef struct {
   int row;
