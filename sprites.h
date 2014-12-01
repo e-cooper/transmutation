@@ -14,8 +14,9 @@ OBJ_ATTR shadowOAM[128];
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 160
 #define COLL_MAP_SIZE 512
-#define NUM_BANANAS 10
-#define NUM_ENEMIES 4
+#define NUM_BANANAS 9
+#define BANANAS_NEEDED 8
+#define NUM_ENEMIES 10
 
 typedef struct {
   int row;

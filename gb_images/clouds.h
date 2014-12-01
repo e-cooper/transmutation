@@ -20,8 +20,8 @@
 #define cloudsTilesLen 5376
 extern const unsigned short cloudsTiles[2688];
 
-#define cloudsMapLen 8192
-extern const unsigned short cloudsMap[4096];
+#define cloudsMapLen 2048
+extern const unsigned short cloudsMap[1024];
 
 #endif // GRIT_CLOUDS_H
 

@@ -21,8 +21,8 @@ void initSprites() {
   vOff = 100;
   hOffClouds = 0;
 
-  int rowVals[] = { 5*8, 5*8, 200, 210, 220, 230, 240, 250, 260, 270};
-  int colVals[] = { 8*8, 20*8, 100, 100, 100, 100, 100, 100, 100, 100};
+  int rowVals[] = { 5*8, 5*8, 13*8, 31*8, 58*8, 38*8, 46*8, 61*8, 48*8 };
+  int colVals[] = { 8*8, 20*8, 61*8, 62*8, 14*8, 4*8, 19*8, 22*8, 50*8 };
   
   for (int i = 0; i < NUM_BANANAS; i++) {
     bananas[i].isActive = 1;
@@ -32,9 +32,9 @@ void initSprites() {
     bananas[i].bigCol = colVals[i];
   }
 
-  // int enemyRowVals[] = { 5*8, 5*8, 200, 210, 220, 230, 240, 250, 260, 270};
-  // int enemyColVals[] = { 8*8, 20*8, 100, 100, 100, 100, 100, 100, 100, 100};
-  // int enemyWaitTimes[] = { };
+  int enemyRowVals[] = { 7*8, 37*8, 13*8, 31*8, 58*8, 38*8, 46*8, 61*8, 48*8, 200 };
+  int enemyColVals[] = { 10*8, 58*8, 61*8, 62*8, 14*8, 4*8, 19*8, 22*8, 50*8, 200 };
+  int enemyWaitTimes[] = { 40, 140, 60, 80, 10, 10, 10, 10, 10, 10 };
 
   for (int i = 0; i < NUM_ENEMIES; i++) {
     enemies[i].aniCounter = 0;
@@ -44,9 +44,9 @@ void initSprites() {
     enemies[i].isActive = 1;
     enemies[i].width = 16;
     enemies[i].height = 16;
-    enemies[i].bigRow = i * 20 + 200;
-    enemies[i].bigCol = i * 20 + 20;
-    enemies[i].waitTime = 60;
+    enemies[i].bigRow = enemyRowVals[i];
+    enemies[i].bigCol = enemyColVals[i];
+    enemies[i].waitTime = enemyWaitTimes[i];
   }
 
   score.width = 8;
@@ -246,7 +246,7 @@ int isPassable(int direction) {
 int checkColor(int colorA, int colorB) {
   int canPass = 0;
 
-  if ((player.score >= NUM_BANANAS - 2) && 
+  if ((player.score >= BANANAS_NEEDED) && 
       colorA == RED && colorB == RED) {
     player.hasWon = 1;
   }
